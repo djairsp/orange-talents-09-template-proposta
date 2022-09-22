@@ -1,4 +1,4 @@
-package com.zup.proposta.proposta;
+package com.zup.proposta;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

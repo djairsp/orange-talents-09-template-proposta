@@ -1,12 +1,16 @@
 package com.zup.proposta.util.beanvalidation;
 
-import org.springframework.util.Assert;
+import com.zup.proposta.exception.UnprocessableEntityException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Object> {
@@ -15,6 +19,7 @@ public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Ob
     private Class<?> klass;
     @PersistenceContext
     private EntityManager manager;
+    private BindException bindingResult;
 
     @Override
     public void initialize(UniqueValue constraintAnnotation) {
@@ -24,10 +29,16 @@ public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Ob
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
+
        Query query = manager.createQuery("select 1 from "+klass.getName()+" where "+domainAttribute+"=:value");
        query.setParameter("value", value);
        List<?> list = query.getResultList();
-       Assert.state(list.size() <=1, "Foi encontrado mais de um "+klass+" com o atributo " + domainAttribute +" = "+ value);
+       //Assert.state(list.size() <=1, "Foi encontrado mais de um "+klass+" com o atributo " + domainAttribute +" = "+ value);
+       if((list.size() >= 1)){
+           String text = "Foi encontrado mais de um "+klass+" com o atributo " + domainAttribute +" = "+ value;
+           throw new UnprocessableEntityException(text);
+       }
+
        return list.isEmpty();
     }
 }

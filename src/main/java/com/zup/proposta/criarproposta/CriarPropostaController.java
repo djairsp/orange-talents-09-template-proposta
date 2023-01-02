@@ -1,13 +1,15 @@
 package com.zup.proposta.criarproposta;
 
 import com.zup.proposta.model.Proposta;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("proposta")
@@ -18,16 +20,14 @@ public class CriarPropostaController {
 
     @PostMapping
     @Transactional
-    public String criarProposta(@RequestBody @Valid CriarPropostaRequest request, ServletUriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity<?> criarProposta(@RequestBody @Valid CriarPropostaRequest request, UriComponentsBuilder uriComponentsBuilder){
         Proposta proposta = request.getModel();
         entityManager.persist(proposta);
-        return urlProposta(proposta, uriComponentsBuilder);
+        return ResponseEntity.created(urlProposta(proposta, uriComponentsBuilder)).build();
     }
 
-    private String urlProposta(Proposta proposta, ServletUriComponentsBuilder uriComponentsBuilder){
-        String urlRetornoPagSeguro = uriComponentsBuilder.path("/proposta/{id}")
-                .buildAndExpand(proposta.getId()).toString();
-        return urlRetornoPagSeguro;
+    private URI urlProposta(Proposta proposta, UriComponentsBuilder uriComponentsBuilder){
+        return uriComponentsBuilder.path("/proposta/{id}").build(proposta.getId());
     }
 
 }

@@ -1,16 +1,13 @@
 package com.zup.proposta.util.beanvalidation;
 
 import com.zup.proposta.exception.UnprocessableEntityException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 public class UniqueValueValidator implements ConstraintValidator<UniqueValue, Object> {

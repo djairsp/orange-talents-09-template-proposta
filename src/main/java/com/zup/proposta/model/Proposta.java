@@ -1,5 +1,9 @@
 package com.zup.proposta.model;
 
+import com.zup.proposta.criarproposta.StatusProposta;
+import com.zup.proposta.solicitacaoanalise.ResultadoAnalise;
+import org.springframework.util.Assert;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +30,7 @@ public class Proposta {
     @NotNull
     private BigDecimal salario;
     private String identificador;
+    private String statusProposta;
 
     @Deprecated
     public Proposta() {}
@@ -52,5 +57,19 @@ public class Proposta {
 
     public Long getId() {
         return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getCpfCnpj() {
+        return cpfCnpj;
+    }
+
+    public void setStatusProposta(ResultadoAnalise resultadoAnalise) {
+        Assert.notNull(resultadoAnalise, "O objeto resultadoAnalise está nulo");
+        Assert.notNull(resultadoAnalise.getResultadoSolicitacao(), "O atributo resultadoAnalise está vazio");
+        this.statusProposta = StatusProposta.tipoRestricao(resultadoAnalise.getResultadoSolicitacao());
     }
 }
